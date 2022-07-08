@@ -15,14 +15,22 @@ function NewProductForm() {
   const [inventory, setInventory] = useState(0);
   const [category_id, setCategoryId] = useState(1);
   const [description, setDescription] = useState("");
-  const [image_url_2, setImageUrl2] = useState("");
-  const [image_url_1, setImageUrl1] = useState("");
-  const [image_url_3, setImageUrl3] = useState("");
-  const [image_url_4, setImageUrl4] = useState("");
-  const [image_url_5, setImageUrl5] = useState("");
-  const [image_url_6, setImageUrl6] = useState("");
+  const [image_url_2, setImageUrl2] = useState(null);
+  const [image_url_1, setImageUrl1] = useState(null);
+  const [image_url_3, setImageUrl3] = useState(null);
+  const [image_url_4, setImageUrl4] = useState(null);
+  const [image_url_5, setImageUrl5] = useState(null);
+  const [image_url_6, setImageUrl6] = useState(null);
 
   const [errors, setErrors] = useState([]);
+
+  const [image, setImage] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
+
+  const updateImage1 = (e) => {
+    const file = e.target.files[0];
+    setImageUrl1(file);
+  };
 
   useEffect(() => {
     const errors = [];
@@ -42,6 +50,23 @@ function NewProductForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+
+    const user_id = sessionUser.id;
+
+    formData.append("user_id", user_id);
+    formData.append("inventory", inventory);
+    formData.append("product_name", product_name);
+    formData.append("price", price);
+    formData.append("description", description);
+    formData.append("category_id", category_id);
+    formData.append("image", image_url_1);
+    formData.append("image_url_2", image_url_2);
+    formData.append("image_url_3", image_url_3);
+    formData.append("image_url_4", image_url_4);
+    formData.append("image_url_5", image_url_5);
+    formData.append("image_url_6", image_url_6);
+
     const payload = {
       user_id: sessionUser.id,
       inventory,
@@ -57,16 +82,14 @@ function NewProductForm() {
       image_url_6,
     };
 
-    let createdProduct = await dispatch(addProduct(payload));
-    console.log("CREATED PRODUCT", createdProduct)
+    let createdProduct = await dispatch(addProduct(formData));
+    // console.log("CREATED PRODUCT", createdProduct)
 
     if (createdProduct) {
       setErrors([]);
       return history.push("/products/all");
     }
   };
-
-
 
   return (
     <div>
@@ -80,12 +103,14 @@ function NewProductForm() {
           </h2>
         </div>
         <div className="create-product-errors-div">
-            <ul className="create-product-errors-ul">
-              {errors.map((error, idx) => (
-                <li className="create-product-errors-li" key={idx}>{error}</li>
-              ))}
-            </ul>
-          </div>
+          <ul className="create-product-errors-ul">
+            {errors.map((error, idx) => (
+              <li className="create-product-errors-li" key={idx}>
+                {error}
+              </li>
+            ))}
+          </ul>
+        </div>
         <form id="new-product-form" onSubmit={handleSubmit}>
           <label className="create-product-labels">Product Name</label>
           <input
@@ -153,10 +178,9 @@ function NewProductForm() {
           <input
             name="image_url_1"
             className="create-product-input"
-            type="text"
-            value={image_url_1}
-            onChange={(e) => setImageUrl1(e.target.value)}
-            placeholder={"Insert image URL here..."}
+            type="file"
+            accept="image/*"
+            onChange={updateImage1}
             required
           />
           <label className="create-product-labels">Image URL 2</label>
@@ -204,7 +228,9 @@ function NewProductForm() {
             onChange={(e) => setImageUrl6(e.target.value)}
             placeholder={"Insert image URL here..."}
           />
-          <button disabled={errors.length > 0} className="submit-btn">Submit</button>
+          <button disabled={errors.length > 0} className="submit-btn">
+            Submit
+          </button>
         </form>
       </div>
     </div>

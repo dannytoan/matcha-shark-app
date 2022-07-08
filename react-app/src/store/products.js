@@ -13,28 +13,28 @@ const add = (newProduct) => ({
 
 export const viewProducts = () => async (dispatch) => {
   const response = await fetch("/api/products");
-  console.log("INSIDE VIEW PRODUCTS THUNK", response)
 
   if (response.ok) {
-    const products = await response.json();
+      const products = await response.json();
 
-    dispatch(view(products.products));
-    return products.products;
-  } else {
-    const errors = await response.json();
-    return errors;
-  }
+      dispatch(view(products.products));
+      return products.products;
+    } else {
+        const errors = await response.json();
+        return errors;
+    }
 };
 
-export const addProduct = (payload) => async (dispatch) => {
-  const response = await fetch("/api/products/new", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+export const addProduct = (formData) => async (dispatch) => {
+    const response = await fetch("/api/products/new", {
+        method: "POST",
+        body: formData,
+    });
+
+    console.log("RESPONSE IN THUNK", response)
 
   const newProduct = await response.json();
-  console.log("NEW PRODUCT", newProduct)
+//   console.log("NEW PRODUCT", newProduct)
 
   if (newProduct) {
     dispatch(add(newProduct));
