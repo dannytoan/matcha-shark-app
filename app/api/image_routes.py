@@ -7,7 +7,7 @@ from app.aws_helper import (
 image_routes = Blueprint("images", __name__)
 
 
-@image_routes.route("", methods=["POST"])
+@image_routes.route("/new", methods=["POST"])
 @login_required
 def upload_image():
     if "image" not in request.files:

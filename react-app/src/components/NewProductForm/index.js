@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { addProduct } from "../../store/products";
+import UploadPicture from "../UploadPicture";
 import "./NewProductForm.css";
 
 function NewProductForm() {
@@ -21,6 +22,8 @@ function NewProductForm() {
   const [image_url_4, setImageUrl4] = useState("");
   const [image_url_5, setImageUrl5] = useState("");
   const [image_url_6, setImageUrl6] = useState("");
+
+  
 
   const [errors, setErrors] = useState([]);
 
@@ -63,6 +66,10 @@ function NewProductForm() {
     setErrors(errors);
   }, [product_name, price, inventory, description, image_url_1]);
 
+
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -101,6 +108,8 @@ function NewProductForm() {
             Create a New Product Listing
           </h2>
         </div>
+
+        <UploadPicture />
 
         <form id="new-product-form" onSubmit={handleSubmit}>
           <label className="create-product-labels">Product Name* (Required)</label>
